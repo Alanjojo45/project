@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HomeService — Download for Windows</title>
+  <meta name="description" content="Download HomeService Setup — The all-in-one desktop application for household service bookings and management." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-dark: #080c16;
+      --bg-card: rgba(18, 24, 43, 0.72);
+      --bg-card-hover: rgba(28, 37, 65, 0.85);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-glow: rgba(99, 140, 255, 0.4);
+      --primary: #3b82f6;
+      --primary-light: #60a5fa;
+      --accent: #8b5cf6;
+      --accent-glow: #ec4899;
+      --success: #10b981;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --grad-hero: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #f472b6 100%);
+      --grad-btn: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+      --grad-btn-hover: linear-gradient(135deg, #1d4ed8 0%, #6d28d9 100%);
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Ambient dynamic glows */
+    .glow-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(140px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.16;
+    }
+    .orb-1 { width: 650px; height: 650px; background: #3b82f6; top: -150px; left: -100px; }
+    .orb-2 { width: 550px; height: 550px; background: #8b5cf6; top: 35%; right: -120px; }
+    .orb-3 { width: 450px; height: 450px; background: #06b6d4; bottom: -80px; left: 25%; }
+
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Navigation */
+    header {
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(8, 12, 22, 0.7);
+      backdrop-filter: blur(16px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .nav-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      color: var(--text-main);
+    }
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--grad-hero);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35);
+    }
+    .tag-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: var(--primary-light);
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 5rem 0 3.5rem;
+      text-align: center;
+    }
+    .hero-badge-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+    .release-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      padding: 0.4rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+    .release-tag span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 10px var(--success);
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 5.5vw, 4.2rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.035em;
+      margin-bottom: 1.5rem;
+      background: var(--grad-hero);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-subtitle {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 680px;
+      margin: 0 auto 3rem;
+      font-weight: 400;
+    }
+
+    /* Main Download Card */
+    .download-grid {
+      display: grid;
+      grid-template-columns: 1.25fr 1fr;
+      gap: 2rem;
+      align-items: stretch;
+      margin-bottom: 4rem;
+    }
+    @media (max-width: 860px) {
+      .download-grid { grid-template-columns: 1fr; }
+    }
+
+    .main-dl-box {
+      background: linear-gradient(145deg, rgba(30, 41, 69, 0.75) 0%, rgba(15, 23, 42, 0.85) 100%);
+      border: 1px solid rgba(99, 140, 255, 0.35);
+      border-radius: 24px;
+      padding: 2.5rem;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), 0 0 40px rgba(59, 130, 246, 0.15);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+    .main-dl-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--grad-hero);
+    }
+
+    .box-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+    }
+    .box-title h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.3rem;
+    }
+    .box-title p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    .recommended-pill {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: #34d399;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.85rem;
+      border-radius: 9999px;
+    }
+
+    .meta-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin: 1.5rem 0 2.2rem;
+      padding: 1.2rem;
+      background: rgba(8, 12, 22, 0.5);
+      border-radius: 16px;
+      border: 1px solid var(--border-subtle);
+    }
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .meta-label {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .meta-value {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    /* Download Buttons */
+    .btn-action {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      padding: 1.1rem 2rem;
+      border-radius: 16px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      text-decoration: none;
+      color: #fff;
+      background: var(--grad-btn);
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      border: none;
+      width: 100%;
+    }
+    .btn-action:hover {
+      background: var(--grad-btn-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(37, 99, 235, 0.55);
+    }
+    .btn-action:active {
+      transform: translateY(1px);
+    }
+
+    /* Alt ZIP card */
+    .alt-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 24px;
+      padding: 2.2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      backdrop-filter: blur(12px);
+      transition: border-color 0.25s ease;
+    }
+    .alt-box:hover {
+      border-color: var(--border-glow);
+    }
+    .alt-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .alt-desc {
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      margin-bottom: 1.5rem;
+    }
+    .btn-outline {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      padding: 0.95rem 1.5rem;
+      border-radius: 14px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      transition: all 0.2s ease;
+      width: 100%;
+    }
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    /* Preview Showcase */
+    .preview-section {
+      margin: 3rem 0 5rem;
+    }
+    .preview-frame {
+      border-radius: 20px;
+      border: 1px solid var(--border-subtle);
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+      background: #000;
+      position: relative;
+    }
+    .preview-frame img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+    .preview-frame:hover img {
+      transform: scale(1.01);
+    }
+
+    /* Feature Grid */
+    .section-title {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.6rem;
+    }
+    .section-desc {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 1rem;
+      margin-bottom: 3rem;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 5rem;
+    }
+    .feat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      padding: 1.8rem;
+      backdrop-filter: blur(10px);
+      transition: all 0.25s ease;
+    }
+    .feat-card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-glow);
+      transform: translateY(-4px);
+    }
+    .feat-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      display: inline-block;
+    }
+    .feat-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .feat-text {
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+
+    /* Installation Steps */
+    .steps-card {
+      background: rgba(18, 24, 43, 0.5);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 2.5rem;
+      margin-bottom: 5rem;
+    }
+    .steps-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .step-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .step-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.88rem;
+    }
+    .step-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .step-desc {
+      color: var(--text-muted);
+      font-size: 0.84rem;
+    }
+
+    /* Attribution & Footer */
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 3rem 0;
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.85rem;
+    }
+    .team-pills {
+      display: flex;
+      justify-content: center;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .team-pill {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      padding: 0.4rem 0.9rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .team-pill strong {
+      color: var(--text-main);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Glows -->
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+  <div class="glow-orb orb-3"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="container nav-content">
+      <a href="#" class="brand">
+        <div class="brand-icon">🏠</div>
+        <span>HomeService</span>
+      </a>
+      <span class="tag-badge">Windows Edition</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-badge-container">
+        <div class="release-tag">
+          <span></span> Ready for Windows 10 &amp; 11 · Version 1.0.0
+        </div>
+      </div>
+      <h1>Home Service Booking &amp;<br>Management System</h1>
+      <p class="hero-subtitle">
+        Download the official installer for the desktop home service ecosystem. Fast, secure, and ready with zero Java setup required.
+      </p>
+
+      <!-- Downloads -->
+      <div class="download-grid">
+        <!-- Main EXE Box -->
+        <div class="main-dl-box">
+          <div>
+            <div class="box-header">
+              <div class="box-title">
+                <h2>Windows Installer (.EXE)</h2>
+                <p>One-click setup wizard for your PC</p>
+              </div>
+              <span class="recommended-pill">Recommended</span>
+            </div>
+
+            <div class="meta-list">
+              <div class="meta-item">
+                <span class="meta-label">File Name</span>
+                <span class="meta-value">HomeServiceSetup.exe</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">File Size</span>
+                <span class="meta-value">~50.2 MB</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">Requirements</span>
+                <span class="meta-value">Windows 10 / 11 (64-bit)</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">Java Runtime</span>
+                <span class="meta-value">Embedded (No Java req.)</span>
+              </div>
+            </div>
+          </div>
+
+          <a href="https://github.com/Alanjojo45/project/releases/latest/download/HomeServiceSetup.exe" download="HomeServiceSetup.exe" class="btn-action" id="btn-download-exe">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Download HomeServiceSetup.exe
+          </a>
+        </div>
+
+        <!-- Portable ZIP Box -->
+        <div class="alt-box">
+          <div>
+            <div class="box-header">
+              <div class="box-title">
+                <div class="alt-title">Portable ZIP Package</div>
+                <p class="alt-desc">Run directly from a USB stick or extracted folder without installing to system folders.</p>
+              </div>
+            </div>
+
+            <div class="meta-list" style="margin-bottom: 1.5rem;">
+              <div class="meta-item">
+                <span class="meta-label">File</span>
+                <span class="meta-value">HomeService-Windows.zip</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">Size</span>
+                <span class="meta-value">~50.2 MB</span>
+              </div>
+            </div>
+          </div>
+
+          <a href="https://github.com/Alanjojo45/project/releases/latest/download/HomeService-Windows.zip" download="HomeService-Windows.zip" class="btn-outline">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+              <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+            Download Portable (.ZIP)
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Preview Mockup -->
+    <section class="preview-section">
+      <div class="preview-frame">
+        <img src="preview.jpg" alt="HomeService UI Preview" />
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section>
+      <h2 class="section-title">Core Platform Features</h2>
+      <p class="section-desc">Designed with high performance and modern Java Swing ergonomics.</p>
+      
+      <div class="features">
+        <div class="feat-card">
+          <div class="feat-icon">👥</div>
+          <div class="feat-name">Three Specialized Portals</div>
+          <p class="feat-text">Dedicated interfaces for Customers (booking, tracking), Service Providers (job flow, earnings), and Admins (audits, analytics).</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">⚡</div>
+          <div class="feat-name">No Java Pre-install Needed</div>
+          <p class="feat-text">Includes a standalone embedded OpenJDK runtime. Download, run, and enjoy instantly on any standard Windows PC.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">☁️</div>
+          <div class="feat-name">Cloud Database Ready</div>
+          <p class="feat-text">Configured with Supabase / PostgreSQL cloud connectivity. Work on multiple devices simultaneously with live sync.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">🛠️</div>
+          <div class="feat-name">8 Home Service Trades</div>
+          <p class="feat-text">Plumbing, Electrical, Cleaning, Carpentry, Painting, Appliance Repair, AC Servicing, and General Maintenance.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">⭐</div>
+          <div class="feat-name">Verified Rating System</div>
+          <p class="feat-text">Integrated 1-5 star feedback loop with automatic recalculation of provider ratings and administrative review moderation.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">🎨</div>
+          <div class="feat-name">Modern FlatLaf UI</div>
+          <p class="feat-text">Dark modern aesthetic featuring ring progress charts, mini bar charts, smooth toast notifications, and gradient cards.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- How to install -->
+    <section class="steps-card">
+      <h2 style="font-size: 1.4rem; font-weight: 700;">How to Get Started</h2>
+      <div class="steps-list">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-title">Download Installer</div>
+          <p class="step-desc">Click the primary download button above to get <code>HomeServiceSetup.exe</code>.</p>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-title">Run Setup</div>
+          <p class="step-desc">Double-click the installer and choose your installation folder (or accept defaults).</p>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-title">Launch Application</div>
+          <p class="step-desc">Open HomeService from your Desktop or Start Menu shortcut and sign in!</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="team-pills">
+        <div class="team-pill"><strong>Abhinav Sajeev</strong> · 25CS009</div>
+        <div class="team-pill"><strong>Alan Jojo</strong> · 25CS032</div>
+        <div class="team-pill"><strong>Allan Peter</strong> · 25CS038</div>
+        <div class="team-pill"><strong>Sebin Raju</strong> · 25CS187</div>
+      </div>
+      <p>© 2026 Home Service Booking and Management System · Built with Java 25 &amp; FlatLaf</p>
+    </div>
+  </footer>
+
+  <script>
+    const btn = document.getElementById('btn-download-exe');
+    if (btn) {
+      btn.addEventListener('click', () => {
+        const originalText = btn.innerHTML;
+        btn.innerHTML = `
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite;">
+            <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
+            <path d="M12 2a10 10 0 0 1 10 10"></path>
+          </svg>
+          Starting Download...
+        `;
+        setTimeout(() => {
+          btn.innerHTML = `
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            Download Started!
+          `;
+          setTimeout(() => {
+            btn.innerHTML = originalText;
+          }, 4000);
+        }, 1000);
+      });
+    }
+  </script>
+</body>
+</html>
